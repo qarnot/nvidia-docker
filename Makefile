@@ -12,13 +12,16 @@ DIST_DIR  := $(CURDIR)/dist
 .NOTPARALLEL:
 .PHONY: all
 
-all: ubuntu18.04 ubuntu16.04 ubuntu14.04 debian9 debian8 centos7 amzn2 amzn1
+all: ubuntu18.04 ubuntu16.04 ubuntu14.04 debian10 debian9 debian8 centos7 amzn2 amzn1
+
 
 ubuntu18.04: $(addsuffix -ubuntu18.04, 18.09.2 18.06.2 18.09.1 18.09.0 18.06.1 18.06.0 18.03.1 17.12.1)
 
 ubuntu16.04: $(addsuffix -ubuntu16.04, 18.09.2 18.06.2 18.09.1 18.09.0 18.06.1 18.06.0 18.03.1 18.03.0 17.12.1 17.12.0 17.09.1 17.09.0 17.06.2 17.03.2 1.13.1 1.12.6)
 
 ubuntu14.04: $(addsuffix -ubuntu14.04, 18.09.2 18.06.2 18.06.1 18.06.0 18.03.1 18.03.0 17.12.1 17.09.1 17.06.2 17.03.2)
+
+debian10: $(addsuffix -debian10, 18.09.0)
 
 debian9: $(addsuffix -debian9, 18.09.2 18.06.2 18.09.1 18.09.0 18.06.1 18.06.0 18.03.1 18.03.0 17.12.1 17.12.0 17.09.1 17.09.0 17.06.2 17.03.2)
 
@@ -315,6 +318,27 @@ amzn1: $(addsuffix -amzn1, 18.06.2-ce 18.06.1-ce 18.03.1-ce 17.12.1-ce 17.09.1-c
 	$(DOCKER) run  --cidfile $@.cid "nvidia/nvidia-docker2/ubuntu:14.04-docker18.06.0"
 	$(DOCKER) cp $$(cat $@.cid):/dist/. $(DIST_DIR)/ubuntu14.04/$(ARCH)
 	$(DOCKER) rm $$(cat $@.cid) && rm $@.cid
+
+%-debian10:
+	$(DOCKER) build --build-arg VERSION_ID="buster" \
+                        --build-arg RUNTIME_VERSION="$(RUNTIME_VERSION)+docker$*-1" \
+                        --build-arg DOCKER_VERSION="docker-ce (= $*~ce-0~debian)" \
+                        --build-arg PKG_VERS="$(VERSION)+docker$*" \
+                        --build-arg PKG_REV="$(PKG_REV)" \
+                        -t "nvidia/nvidia-docker2/debian:10-docker$*" -f Dockerfile.debian .
+	$(DOCKER) run --rm -v $(DIST_DIR)/debian10:/dist:Z "nvidia/nvidia-docker2/debian:10-docker$*"
+
+18.09.0-debian10:
+	$(DOCKER) build --build-arg VERSION_ID="buster" \
+                        --build-arg RUNTIME_VERSION="$(RUNTIME_VERSION)+docker18.09.0-1" \
+                        --build-arg DOCKER_VERSION="docker-ce (= 5:18.09.0~3-0~debian-buster)" \
+                        --build-arg PKG_VERS="$(VERSION)+docker18.09.0" \
+                        --build-arg PKG_REV="$(PKG_REV)" \
+                        -t "nvidia/nvidia-docker2/debian:10-docker18.09.0" -f Dockerfile.debian .
+	$(DOCKER) run --rm -v $(DIST_DIR)/debian10:/dist:Z "nvidia/nvidia-docker2/debian:10-docker18.09.0"
+
+
+
 
 %-debian9: ARCH := amd64
 %-debian9:
