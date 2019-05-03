@@ -328,14 +328,14 @@ amzn1: $(addsuffix -amzn1, 18.06.2-ce 18.06.1-ce 18.03.1-ce 17.12.1-ce 17.09.1-c
                         -t "nvidia/nvidia-docker2/debian:10-docker$*" -f Dockerfile.debian .
 	$(DOCKER) run --rm -v $(DIST_DIR)/debian10:/dist:Z "nvidia/nvidia-docker2/debian:10-docker$*"
 
-18.09.0-debian10:
+18.09.5-debian10:
 	$(DOCKER) build --build-arg VERSION_ID="buster" \
-                        --build-arg RUNTIME_VERSION="$(RUNTIME_VERSION)+docker18.09.0-1" \
-                        --build-arg DOCKER_VERSION="docker-ce (= 5:18.09.0~3-0~debian-buster)" \
-                        --build-arg PKG_VERS="$(VERSION)+docker18.09.0" \
+                        --build-arg RUNTIME_VERSION="$(RUNTIME_VERSION)+docker18.09.5-3" \
+                        --build-arg DOCKER_VERSION="docker-ce (= 5:18.09.5~3-0~debian-buster)" \
+                        --build-arg PKG_VERS="$(VERSION)+docker18.09.5" \
                         --build-arg PKG_REV="$(PKG_REV)" \
-                        -t "nvidia/nvidia-docker2/debian:10-docker18.09.0" -f Dockerfile.debian .
-	$(DOCKER) run --rm -v $(DIST_DIR)/debian10:/dist:Z "nvidia/nvidia-docker2/debian:10-docker18.09.0"
+                        -t "nvidia/nvidia-docker2/debian:10-docker18.09.5" -f Dockerfile.debian .
+	$(DOCKER) run --rm -v $(DIST_DIR)/debian10:/dist:Z "nvidia/nvidia-docker2/debian:10-docker18.09.5"
 
 
 
